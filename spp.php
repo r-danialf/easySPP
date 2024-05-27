@@ -77,7 +77,9 @@ $kelasnum -= 1;
     echo $status;
     if($status == 'BELUM') { echo " LUNAS"; }
 
-    echo " - (Rp$terbayarkan dari Rp$total[$kelasnum])";
+    $terbayar_hold = $terbayarkan;
+
+    echo " - (Rp$terbayar_hold dari Rp$total[$kelasnum])";
     ?>
 
     <br><br><hr><br>
@@ -110,8 +112,6 @@ $kelasnum -= 1;
 
                         $terhitung = round($total[$n-1]/$lingkup_bulan);
 
-                        echo $terhitung.":".$n-1;
-
                         for ($i=0; $i < $lingkup_bulan; $i++) { 
                             if ($terbayarkan >= $terhitung) {
                                 echo "<tr><td>".$month[$i]."</td><td>$terhitung</td></tr>";
@@ -130,10 +130,23 @@ $kelasnum -= 1;
         </div>
         <div id="sidenav">
             <ul>
+                <?php
+                    $classroman = array('X', 'XI', 'XII', 'XIII');
+                    foreach (array(1,2,3,4) as $n) {
+                        if(!in_array($n, $unpaid)) {
+                            echo "<li><a href=\"spp.php?nisn=$nisn&kelas=$n\">Kelas ".$classroman[$n-1]."</a></li>";
+                        }
+                    }
+                ?>
 
-                <li><a href=""></a></li>
-                <li><a href=""></a></li>
-                <li><a href=""></a></li>
+                <br><br>
+                <h3>Tambahkan Nomina</h3>
+                <input type="text" name="bayartambah">
+                <button>s</button>
+                <hr>
+                <h3>Kurangi Nomina</h3>
+                <input type="text" name="bayarkurang">
+                <button>ss</button>
             </ul>
 
         </div>
