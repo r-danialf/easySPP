@@ -14,6 +14,14 @@ if (isset($_COOKIE["usercode"])) {
 }
 
 $nisn = test_input($_GET['nisn']);
+
+if (!isset($_GET['kelas'])) {
+    header("Location: ./spp.php?nisn=$nisn&kelas=1");
+}
+
+$kelasnum = test_input($_GET['kelas']);
+$kelasnum -= 1;
+
 ?>
 
 
@@ -27,12 +35,31 @@ $nisn = test_input($_GET['nisn']);
     <style>
         h2 {
             margin: 0;
-            padding: 12px 0;
+            padding: 6px 0;
             font-size: xx-large;
+        }
+
+        table { 
+            border-collapse: collapse; 
+            width: 100%; 
+        }
+
+        th, td {
+            border: 1px solid #224; 
+            padding: 0.5em; 
+            text-align: left;
+        }
+
+        .main {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
         }
     </style>
 </head>
 <body>
+    <a href="dashboard.php">DASHBOARD</a>
+    <br><hr><br>
+
     <?php
     echo $nisn;
     $data = check_student_spp($nisn);
@@ -41,13 +68,8 @@ $nisn = test_input($_GET['nisn']);
         $$d = $data[$d];
     } 
 
-    switch ($kelas) {
-        case 'XI': $total = $total_kelas2; break;
-        case 'XII': $total = $total_kelas3; break;
-        case 'XIII': $total = $total_kelas4; break;
-        
-        default: $total = $total_kelas1; break;
-    }
+    $total = array($total_kelas1, $total_kelas2, $total_kelas3, $total_kelas4);
+
 
     echo " - ($kelas $jurusan $bagian)";
     echo "<h2>$nama</h2>";
@@ -55,9 +77,68 @@ $nisn = test_input($_GET['nisn']);
     echo $status;
     if($status == 'BELUM') { echo " LUNAS"; }
 
-    echo " - (Rp$terbayarkan dari Rp$total)";
-    
-
+    echo " - (Rp$terbayarkan dari Rp$total[$kelasnum])";
     ?>
+
+    <br><br><hr><br>
+
+    <div class="main">    
+        <div id="spp-list">
+            <?php
+                $month = [
+                    'Juli', 
+                    'Agustus', 
+                    'September', 
+                    'Oktober', 
+                    'November',
+                    'Desember',
+                    'Januari',
+                    'Februari',
+                    'Maret',
+                    'April',
+                    'Mei',
+                    'Juni',
+                ];
+
+                $unpaid = str_split($hiraubayar);
+
+                foreach (array(1,2,3,4) as $n) {
+                    if(!in_array($n, $unpaid)) {
+                        $displaymode = ($n-1 !== $kelasnum) ? "style=\"display: none;\"" : "";
+                        echo "<div id=\"kelas$n\" $displaymode>";
+                        echo "<table><tr><th>Bulan</th><th>Terbayarkan</th></tr>";
+
+                        $terhitung = round($total[$n-1]/$lingkup_bulan);
+
+                        echo $terhitung.":".$n-1;
+
+                        for ($i=0; $i < $lingkup_bulan; $i++) { 
+                            if ($terbayarkan >= $terhitung) {
+                                echo "<tr><td>".$month[$i]."</td><td>$terhitung</td></tr>";
+                                $terbayarkan -= $terhitung;
+                            } else {
+                                echo "<tr><td>".$month[$i]."</td><td>$terbayarkan</td></tr>";
+                                $terbayarkan = 0;
+                            }
+                        } echo "</table></div>";
+                    }
+                }
+
+                
+            ?>
+
+        </div>
+        <div id="sidenav">
+            <ul>
+
+                <li><a href=""></a></li>
+                <li><a href=""></a></li>
+                <li><a href=""></a></li>
+            </ul>
+
+        </div>
+    </div>
+
+
 </body>
 </html>

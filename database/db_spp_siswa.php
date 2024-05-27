@@ -1,5 +1,5 @@
 <?php
-    $dbkeys = array('nisn','nama','kelas','jurusan','bagian','status','terbayarkan');
+    $dbkeys = array('nisn','status','terbayarkan','hiraubayar');
     require_once "../sys/dbconnect.php";
 
     if ($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -36,15 +36,8 @@
     li { padding: 0.2em 0.5em; grid-template-columns: 0.5fr 1fr;}
 </style>
 
-<!-- furry indonesia -->
-
 <ul>
     <li>nisn: <input type="text" name="nisn" oninput="checkStudent()"></li>
-    <?php 
-        foreach (array_slice($dbkeys, 1, 4) as $k) {
-            echo "<li>$k: <input type=\"text\" name=\"$k\" disabled></li>";
-        }
-    ?>
     <li> status:
         <select name="status">
             <option value="BELUM">BELUM</option>
@@ -52,6 +45,9 @@
         </select>
     </li>
     <li>terbayarkan: <input type="text" name="terbayarkan"></li>
+    <li>hiraubayar: <input type="text" name="hiraubayar"></li>
+    <li>Terdeteksi: <span id="deteksi" style="color: red">TIDAK TERDETEKSI</span></li>
+    <li>Nama: <input type="text" name="nama" disabled></li>
 </ul>
     
 <input type="submit" value="CREATE" onclick="setData();">
@@ -75,6 +71,9 @@
         } 
     ?>
 
+    const nama = document.getElementsByName("nama")[0];
+    const deteksi = document.getElementById("deteksi");
+
     const table = document.getElementsByTagName("table")[0];
 
     function writeForm(id) {
@@ -93,31 +92,40 @@
         
         allrows.forEach(e => {e.style.backgroundColor = "#fff";});
         row.style.backgroundColor = "#0aa";
+
+        checkStudent();
     }
 
     function checkStudent() {
         nama.value = "";
-        kelas.value = "";
-        jurusan.value = "";
-        bagian.value = "";
-        
-        if (nisn.value !== "" || nisn.value !== null) {
-            const xhr = new XMLHttpRequest();
-            const par = `nisn=${nisn.value}&act=CHECK`;
-            xhr.open('POST', "../sys/action.php", true);
-            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && this.responseText !== "") {
-                    const studentData = JSON.parse(this.responseText);
 
-                    nama.value = studentData.nama;
-                    kelas.value = studentData.kelas;
-                    jurusan.value = studentData.jurusan;
-                    bagian.value = studentData.bagian;
-                }
-            };
-            xhr.send(par);
-        }    
+        console.log(nisn.value.length);
+        
+        if (nisn.value.length === 10) {
+            if (nisn.value !== "" || nisn.value !== null) {
+                const xhr = new XMLHttpRequest();
+                const par = `nisn=${nisn.value}&act=CHECK`;
+                xhr.open('POST', "../sys/action.php", true);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200 && this.responseText !== "") {
+                        const studentData = JSON.parse(this.responseText);
+
+                        nama.value = studentData.nama;
+                        deteksi.innerHTML = "TERDETEKSI";
+                        deteksi.style.color = "blue";
+
+                    } else {
+                        deteksi.innerHTML = "TIDAK TERDETEKSI";
+                        deteksi.style.color = "red";
+                    }
+                };
+                xhr.send(par);
+            }    
+        } else {
+            deteksi.innerHTML = "TIDAK TERDETEKSI";
+            deteksi.style.color = "red";
+        }
     }
 
     function setData() {

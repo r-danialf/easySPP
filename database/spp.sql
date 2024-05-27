@@ -87,23 +87,11 @@ DROP TABLE IF EXISTS `spp_siswa`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `spp_siswa` (
   `nisn` varchar(10) NOT NULL,
-  `nama` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `kelas` enum('X','XI','XII','XIII') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `jurusan` varchar(8) NOT NULL,
-  `bagian` enum('1','2','3','4') NOT NULL DEFAULT '1',
   `status` enum('BELUM','LUNAS') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `terbayarkan` int NOT NULL,
   `hiraubayar` varchar(4) NOT NULL,
-  UNIQUE KEY `bagian` (`bagian`),
-  KEY `nisn` (`nisn`),
-  KEY `nama` (`nama`),
-  KEY `kelas` (`kelas`),
-  KEY `jurusan` (`jurusan`),
-  CONSTRAINT `spp_siswa_ibfk_2` FOREIGN KEY (`jurusan`) REFERENCES `info_spp_jurusan` (`jurusan`),
-  CONSTRAINT `spp_siswa_ibfk_3` FOREIGN KEY (`nama`) REFERENCES `siswa` (`nama`),
-  CONSTRAINT `spp_siswa_ibfk_4` FOREIGN KEY (`kelas`) REFERENCES `siswa` (`kelas`),
-  CONSTRAINT `spp_siswa_ibfk_5` FOREIGN KEY (`nisn`) REFERENCES `siswa` (`nisn`),
-  CONSTRAINT `spp_siswa_ibfk_6` FOREIGN KEY (`bagian`) REFERENCES `siswa` (`bagian`)
+  UNIQUE KEY `nisn` (`nisn`),
+  CONSTRAINT `spp_siswa_ibfk_2` FOREIGN KEY (`nisn`) REFERENCES `siswa` (`nisn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -113,7 +101,7 @@ CREATE TABLE `spp_siswa` (
 
 LOCK TABLES `spp_siswa` WRITE;
 /*!40000 ALTER TABLE `spp_siswa` DISABLE KEYS */;
-INSERT INTO `spp_siswa` VALUES ('3068827613','Yugoslavika','XII','RPL','2','BELUM',0,'');
+INSERT INTO `spp_siswa` VALUES ('3068827613','BELUM',0,'4');
 /*!40000 ALTER TABLE `spp_siswa` ENABLE KEYS */;
 UNLOCK TABLES;
 

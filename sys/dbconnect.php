@@ -65,9 +65,8 @@
         global $server_hostname, $server_username, $server_password, $server_database;
         $conn = new mysqli($server_hostname, $server_username, $server_password, $server_database);
 
-        $vars = ['nama','kelas','spp_siswa.jurusan','bagian','status','terbayarkan', 'hiraubayar'];
-        foreach([1,2,3,4] as $n) { $vars[] = "total_kelas$n"; } 
-        $vars[] = 'lingkup_bulan';
+        $vars = ['nama','kelas','siswa.jurusan','bagian','status','terbayarkan','hiraubayar','lingkup_bulan'];
+        foreach([1,2,3,4] as $n) { $vars[] = "total_kelas$n"; }
 
         $keys = implode(",", $vars);
         $data = array();
@@ -76,7 +75,7 @@
             die("CONNECT_FAIL: $conn->connect_error");
         }
 
-        $sql = "SELECT $keys FROM spp_siswa INNER JOIN info_spp_jurusan WHERE spp_siswa.jurusan = info_spp_jurusan.jurusan AND nisn='$nisn'";
+        $sql = "SELECT $keys FROM spp_siswa INNER JOIN info_spp_jurusan INNER JOIN siswa WHERE siswa.jurusan = info_spp_jurusan.jurusan AND siswa.nisn='$nisn'";
         $res = $conn->query($sql);
 
         if($res->num_rows > 0) {
@@ -144,7 +143,7 @@
             die("CONNECT_FAIL: $conn->connect_error");
         }
 
-        $sql = "SELECT nisn, nama, terbayarkan, status FROM spp_siswa WHERE jurusan=\"$jurusan\" AND kelas=\"$kelas\" AND bagian=\"$bagian\"";
+        $sql = "SELECT siswa.nisn, nama, terbayarkan, status FROM spp_siswa INNER JOIN siswa WHERE jurusan=\"$jurusan\" AND kelas=\"$kelas\" AND bagian=\"$bagian\" AND spp_siswa.nisn = siswa.nisn ";
         $res = $conn->query($sql);
 
         $headprinted = false;
