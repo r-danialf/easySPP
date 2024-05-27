@@ -36,6 +36,8 @@
     li { padding: 0.2em 0.5em; grid-template-columns: 0.5fr 1fr;}
 </style>
 
+<!-- furry indonesia -->
+
 <ul>
     <li>nisn: <input type="text" name="nisn" oninput="checkStudent()"></li>
     <?php 
