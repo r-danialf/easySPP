@@ -139,18 +139,41 @@ $kelasnum -= 1;
                     }
                 ?>
 
-                <br><br>
+                
                 <h3>Tambahkan Nomina</h3>
                 <input type="text" name="bayartambah">
-                <button>s</button>
-                <hr>
+                <button onclick="setNominal('bayartambah')">s</button>
+                <br><br><hr>
                 <h3>Kurangi Nomina</h3>
                 <input type="text" name="bayarkurang">
-                <button>ss</button>
+                <button onclick="setNominal('bayarkurang', -1)">ss</button>
             </ul>
 
         </div>
     </div>
+
+    <script>
+        const terbayar = <?php echo $terbayar_hold ?>;
+        const url = "sys/action.php";
+
+        function setNominal(name, multiplier = 1) {
+            const nominaltxt = document.getElementsByName(name)[0];
+            let nominal = Number(nominaltxt.value);
+
+            const xhr = new XMLHttpRequest();
+            const par = `act=NOMINAL&money=${terbayar+(nominal*multiplier)}&before=${terbayar}`;
+            xhr.open('POST', url, true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                    console.log(this.responseText);
+                    location.reload();
+                }
+            };
+            xhr.send(par);
+        }
+
+    </script>
 
 
 </body>

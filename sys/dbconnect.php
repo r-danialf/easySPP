@@ -65,17 +65,33 @@
         global $server_hostname, $server_username, $server_password, $server_database;
         $conn = new mysqli($server_hostname, $server_username, $server_password, $server_database);
 
-        $vars = ['nama','kelas','siswa.jurusan','bagian','status','terbayarkan','hiraubayar','lingkup_bulan'];
-        foreach([1,2,3,4] as $n) { $vars[] = "total_kelas$n"; }
+        
 
-        $keys = implode(",", $vars);
+        $keys = implode(",", array('nama','kelas','siswa.jurusan','bagian','lingkup_bulan', 'total_kelas1', 'total_kelas2', 'total_kelas3', 'total_kelas4'));
         $data = array();
 
         if ($conn->connect_error) {
             die("CONNECT_FAIL: $conn->connect_error");
         }
 
-        $sql = "SELECT $keys FROM spp_siswa INNER JOIN info_spp_jurusan INNER JOIN siswa WHERE siswa.jurusan = info_spp_jurusan.jurusan AND siswa.nisn='$nisn'";
+        $sql = "SELECT $keys FROM siswa INNER JOIN info_spp_jurusan WHERE siswa.jurusan = info_spp_jurusan.jurusan AND siswa.nisn='$nisn'";
+        $res = $conn->query($sql);
+
+        if($res->num_rows > 0) {
+            while($row = $res->fetch_assoc()) {
+                $key = array_keys($row);
+                $val = array_values($row);
+
+                $i = 0;
+                foreach($key as $k) {
+                    $data[$k] = $val[$i];
+                    $i+=1;
+                }
+            }
+        }
+
+        $keys = implode(",", array('status','terbayarkan','hiraubayar'));
+        $sql = "SELECT $keys FROM spp_siswa WHERE nisn='$nisn'";
         $res = $conn->query($sql);
 
         if($res->num_rows > 0) {
