@@ -11,7 +11,7 @@
         list($username, $password) = explode(":", $_COOKIE["usercode"]);
 
         if ( check_user_tu($username, $password) ) {
-            header("Location: ./dashboard.php");
+            header("Location: ./dashboard/spp.php");
         }
     }
 
@@ -31,7 +31,7 @@
     <h2>SPP CONTROL PANEL TEST PAGE</h2> <hr>
     <b>TEST TU LOGIN</b>
 
-    <form action="/easySPP/dashboard.php" method="post">
+    <form action="/easySPP/dashboard/spp.php" method="post">
         USERNAME: <input type="text" name="username" value="<?php echo $_SESSION["username"]; ?>"> <br>
         PASSWORD: <input type="text" name="password" value="<?php echo $_SESSION["password"]; ?>"> <br>
         <input type="submit" name="submit" value="Log-in">

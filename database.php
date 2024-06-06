@@ -42,7 +42,7 @@
     <a href="database.php?db=db_siswa">DB SISWA</a> || 
     <a href="database.php?db=db_spp_siswa">DB SPP SISWA</a> || 
     <a href="database.php?db=db_info_spp_jurusan">DB INFO SPP JURUSAN</a> ||
-    <a href="dashboard.php">DASHBOARD</a>
+    <a href="dashboard/spp.php">DASHBOARD</a>
     
     <hr>
 

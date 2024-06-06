@@ -190,6 +190,102 @@
         $conn->close();
     }
 
+    function show_spp_table2( $jurusan, $kelas, $bagian ) {
+        global $server_hostname, $server_username, $server_password, $server_database;
+        $conn = new mysqli($server_hostname, $server_username, $server_password, $server_database);
+            
+        if ($conn->connect_error) {
+            die("CONNECT_FAIL: $conn->connect_error");
+        }
+
+        $sql = "SELECT siswa.nisn, nama, terbayarkan, status FROM spp_siswa INNER JOIN siswa WHERE jurusan=\"$jurusan\" AND kelas=\"$kelas\" AND bagian=\"$bagian\" AND spp_siswa.nisn = siswa.nisn ";
+        $res = $conn->query($sql);
+
+        $headprinted = false;
+        $i = 0;
+        
+        if($res->num_rows > 0) {
+            while($row = $res->fetch_assoc()) {
+                $key = array('NISN', 'Nama Siswa', 'SPP Terbayar', 'Kelunasan', 'Akses SPP');
+                $val = array_values($row);
+
+                if (!$headprinted) {
+                    foreach($key as $k) {
+                        echo "<th>$k</th>";
+                    } $headprinted = true;
+                }
+
+                $onclick = "onclick=\"window.location.href = 'spp/info.php?nisn=".$val[0]."'\" id=\"$i\"";
+
+                echo "<tr $onclick>";
+                foreach ($val as $v) {
+                    switch ($v) {
+                        case "BELUM": 
+                            echo "<td><span class=\"unfulfilled-spp\">$v</span></td>";
+                        break;
+                        case "LUNAS": 
+                            echo "<td><span class=\"fulfilled-spp\">$v</span></td></td>";
+                        break;
+                        default: echo "<td>$v</td>";
+                    }
+                    
+                } echo "<td class=\"fakelink\">Edit SPP Siswa</td>";
+                echo "</tr>";
+
+                $i+=1;
+            }
+        }
+        $conn->close();
+    }
+
+    function show_spp_table3( $nisn ) {
+        global $server_hostname, $server_username, $server_password, $server_database;
+        $conn = new mysqli($server_hostname, $server_username, $server_password, $server_database);
+            
+        if ($conn->connect_error) {
+            die("CONNECT_FAIL: $conn->connect_error");
+        }
+
+        $sql = "SELECT siswa.nisn, nama, terbayarkan, status FROM spp_siswa INNER JOIN siswa WHERE siswa.nisn LIKE \"%$nisn%\" AND spp_siswa.nisn = siswa.nisn ";
+        $res = $conn->query($sql);
+
+        $headprinted = false;
+        $i = 0;
+        
+        if($res->num_rows > 0) {
+            while($row = $res->fetch_assoc()) {
+                $key = array('NISN', 'Nama Siswa', 'SPP Terbayar', 'Kelunasan', 'Akses SPP');
+                $val = array_values($row);
+
+                if (!$headprinted) {
+                    foreach($key as $k) {
+                        echo "<th>$k</th>";
+                    } $headprinted = true;
+                }
+
+                $onclick = "onclick=\"window.location.href = 'spp/info.php?nisn=".$val[0]."'\" id=\"$i\"";
+
+                echo "<tr $onclick>";
+                foreach ($val as $v) {
+                    switch ($v) {
+                        case "BELUM": 
+                            echo "<td><span class=\"unfulfilled-spp\">$v</span></td>";
+                        break;
+                        case "LUNAS": 
+                            echo "<td><span class=\"fulfilled-spp\">$v</span></td></td>";
+                        break;
+                        default: echo "<td>$v</td>";
+                    }
+                    
+                } echo "<td class=\"fakelink\">Edit SPP Siswa</td>";
+                echo "</tr>";
+
+                $i+=1;
+            }
+        }
+        $conn->close();
+    }
+
     function insert_data( $table, $data ) {
         global $server_hostname, $server_username, $server_password, $server_database;
         $conn = new mysqli($server_hostname, $server_username, $server_password, $server_database);

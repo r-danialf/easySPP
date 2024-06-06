@@ -7,8 +7,12 @@
         set_chosen($_GET['jurusan'], $_GET['kelas'], $_GET['bagian']);
     }
 
+    if (isset($_GET['action']) && $_GET['action'] === 'get_student') {
+        show_spp_table3($_GET['nisn']);
+    }
+
     if (isset($_GET['action']) && $_GET['action'] === 'logout') {
-        setcookie("usercode", "", time() - a_month, "/");
+        setcookie("usercode", "", time() - 3600, "/");
         header("Location: ../login.php");
     }
 
